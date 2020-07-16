@@ -1,14 +1,39 @@
 # /etc/systemd/system/rclone_vfs.service
 [Unit]
 Description=Rclone VFS Mount
+After=network-online.target
 
 [Service]
-# The dummy program will exit
+User=1000
+Group=1000
 Type=oneshot
-# Execute a dummy program
-ExecStart=/bin/true
-# This service shall be considered active after start
+ExecStartPre=/bin/sleep 10
+ExecStart=/bin/bash -c "\
+    while IFS= read -r line; do \
+        /bin/mkdir -p \"/mnt/remote/rclone.$${line%%:}\" && \
+        /usr/bin/rclone mount \
+            --allow-non-empty \
+            --allow-other \
+            --buffer-size=64M \
+            --dir-cache-time=168h \
+            --drive-chunk-size=64M \
+            --drive-skip-gdocs \
+            --fast-list \
+            --syslog \
+            --timeout=10m \
+            --umask=002 \
+            --vfs-read-chunk-size-limit=2048M \
+            --vfs-read-chunk-size=64M \
+            -v \
+            \"$${line}\" \
+            \"/mnt/remote/rclone.$${line%%:}\" || true & \
+    done < <(/usr/bin/rclone listremotes)"
+ExecStop=/bin/umount /mnt/remote/rclone.*
 RemainAfterExit=yes
+Restart=on-abort
+RestartSec=5
+StartLimitInterval=60s
+StartLimitBurst=3
 
 [Install]
 WantedBy=default.target

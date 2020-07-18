@@ -30,10 +30,6 @@ ExecStart=/bin/bash -c "\
     done < <(/usr/bin/rclone listremotes)"
 ExecStop=/bin/umount /mnt/remote/rclone.*
 RemainAfterExit=yes
-Restart=on-abort
-RestartSec=5
-StartLimitInterval=60s
-StartLimitBurst=3
 
 [Install]
 WantedBy=default.target

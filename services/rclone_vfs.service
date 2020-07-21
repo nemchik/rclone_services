@@ -27,8 +27,7 @@ ExecStart=/bin/bash -c "\
             -v \
             \"$${line}\" \
             \"/mnt/remote/rclone.$${line%%:}\" || true & \
-    done < <(/usr/bin/rclone listremotes) && \
-    rclone rcd &"
+    done < <(/usr/bin/rclone listremotes)"
 ExecStop=/bin/umount /mnt/remote/rclone.*
 RemainAfterExit=yes
 

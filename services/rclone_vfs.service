@@ -29,9 +29,7 @@ ExecStart=/bin/bash -c "\
             \"/mnt/remote/rclone.$${line%%:}\" || true & \
     done < <(/usr/bin/rclone listremotes)"
 ExecStop=/bin/umount /mnt/remote/rclone.*
-ExecStopPost=/bin/sleep 10
 RemainAfterExit=yes
-RestartSec=10
 
 [Install]
 WantedBy=default.target

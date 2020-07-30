@@ -12,7 +12,8 @@ ExecStartPre=/bin/sleep 10
 ExecStart=/usr/bin/rclone rc vfs/refresh \
   recursive=true \
   --timeout=1h \
-  -vvv
+  -vvv \
+  --rc-addr=localhost:5572
 
 [Install]
 WantedBy=default.target

@@ -12,5 +12,8 @@ main() {
     curl -fsSL rclone.org/install.sh -o "${GET_RCLONE}"
     sudo bash "${GET_RCLONE}" || true
     rm -f "${GET_RCLONE}" || true
+
+    sudo cp services/rclone@.service /etc/systemd/system/rclone@.service
+    sudo systemctl daemon-reload
 }
 main

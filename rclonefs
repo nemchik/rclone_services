@@ -36,6 +36,6 @@ trans="$trans $remote $mountpoint"
 PATH=$PATH rclone mount "$trans" < /dev/null > /dev/null 2> /dev/null &
 
 # WARNING: this will loop forever if remote is actually empty!
-until [ "$(ls -l "$mountpoint")" != 'total 0' ]; do
+until [ "$(ls -l $mountpoint)" != 'total 0' ]; do
     sleep 1
 done

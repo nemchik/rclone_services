@@ -1,0 +1,127 @@
+# /etc/systemd/system/rclone@.service
+[Unit]
+Description=RClone mount of users remote %i using filesystem permissions
+Documentation=http://rclone.org/docs/
+Documentation=https://github.com/rclone/rclone/wiki/Systemd-rclone-mount
+After=network-online.target
+
+
+[Service]
+Type=notify
+
+#Default arguments for rclone mount. Can be overridden in the environment file
+Environment=RCLONE_ATTR_TIMEOUT="1s"
+Environment=RCLONE_BUFFER_SIZE="16M"
+Environment=RCLONE_BWLIMIT="40M"
+Environment=RCLONE_CACHE_CHUNK_PATH="%h/.cache/rclone/cache-backend"
+Environment=RCLONE_CACHE_DB_PATH="%h/.cache/rclone/cache-backend"
+Environment=RCLONE_CACHE_DIR="%h/.cache/rclone"
+Environment=RCLONE_CACHE_INFO_AGE="6h0m0s"
+Environment=RCLONE_CACHE_TMP_UPLOAD_PATH="/tmp/rclone/%u/%i/upload"
+Environment=RCLONE_CACHE_WORKERS="4"
+Environment=RCLONE_CHECKERS="8"
+Environment=RCLONE_CONFIG="%h/.config/rclone/rclone.conf"
+Environment=RCLONE_DIR_CACHE_TIME="5m0s"
+Environment=RCLONE_DIR_PERMS="0777"
+Environment=RCLONE_DRIVE_CHUNK_SIZE="8M"
+Environment=RCLONE_FILE_PERMS="0666"
+Environment=RCLONE_GID="%G"
+Environment=RCLONE_LOCAL_PATH="/mnt/remote/rclone.%i"
+Environment=RCLONE_MAX_READ_AHEAD="128k"
+Environment=RCLONE_POLL_INTERVAL="1m0s"
+Environment=RCLONE_RC_ADDR="localhost:5572"
+Environment=RCLONE_REMOTE_NAME="%i"
+Environment=RCLONE_REMOTE_PATH="/"
+Environment=RCLONE_STATS="1m0s"
+Environment=RCLONE_TIMEOUT="5m0s"
+Environment=RCLONE_UID="%U"
+Environment=RCLONE_UMASK="022"
+Environment=RCLONE_VERBOSE="0"
+Environment=RCLONE_VFS_CACHE_MAX_AGE="1h0m0s"
+Environment=RCLONE_VFS_CACHE_MAX_SIZE="off"
+Environment=RCLONE_VFS_CACHE_MODE="off"
+Environment=RCLONE_VFS_CACHE_POLL_INTERVAL="1m0s"
+Environment=RCLONE_VFS_READ_CHUNK_SIZE_LIMIT="off"
+Environment=RCLONE_VFS_READ_CHUNK_SIZE="128M"
+
+#TODO: figure out default for the following parameter
+Environment=RCLONE_DAEMON_TIMEOUT="UNKNOWN_DEFULT"
+Environment=RCLONE_VOLNAME="UNKNOWN_DEFULT"
+
+#Overwrite default environment settings with settings from the file if present
+EnvironmentFile=-%h/.config/rclone/%i.env
+
+#Run the service as the specified user/group
+User="${RCLONE_UID}"
+Group="${RCLONE_GID}"
+
+#Check that rclone is installed
+ExecStartPre=/usr/bin/test -x /usr/bin/rclone
+
+#Check the mount directory
+ExecStartPre=/usr/bin/test -d "${RCLONE_LOCAL_PATH}"
+ExecStartPre=/usr/bin/test -w "${RCLONE_LOCAL_PATH}"
+#TODO: Add test for RCLONE_LOCAL_PATH being empty
+
+#Check the rclone configuration file
+ExecStartPre=/usr/bin/test -f "${RCLONE_CONFIG}"
+ExecStartPre=/usr/bin/test -r "${RCLONE_CONFIG}"
+#TODO: add test that the remote is configured for the rclone configuration
+
+#Mount rclone fs
+ExecStart=/usr/bin/rclone mount \
+            --allow-non-empty \
+            --allow-other \
+            --cache-writes \
+            --default-permissions \
+            --drive-skip-gdocs \
+            --drive-use-trash \
+            --fast-list \
+            --no-modtime \
+            --rc \
+            --syslog \
+            --config="${RCLONE_CONFIG}" \
+            --attr-timeout="${RCLONE_ATTR_TIMEOUT}" \
+            --buffer-size="${RCLONE_BUFFER_SIZE}" \
+            --bwlimit="${RCLONE_BWLIMIT}" \
+            --cache-chunk-path="${RCLONE_CACHE_CHUNK_PATH}" \
+            --cache-db-path="${RCLONE_CACHE_DB_PATH}" \
+            --cache-dir="${RCLONE_CACHE_DIR}" \
+            --cache-info-age="${RCLONE_CACHE_INFO_AGE}" \
+            --cache-tmp-upload-path="${RCLONE_CACHE_TMP_UPLOAD_PATH}" \
+            --cache-workers="${RCLONE_CACHE_WORKERS}" \
+            --checkers="${RCLONE_CHECKERS}" \
+            --dir-cache-time="${RCLONE_DIR_CACHE_TIME}" \
+            --dir-perms="${RCLONE_DIR_PERMS}" \
+            --drive-chunk-size="${RCLONE_DRIVE_CHUNK_SIZE}" \
+            --file-perms="${RCLONE_FILE_PERMS}" \
+            --gid="${RCLONE_GID}" \
+            --max-read-ahead="${RCLONE_MAX_READ_AHEAD}" \
+            --poll-interval="${RCLONE_POLL_INTERVAL}" \
+            --rc-addr="${RCLONE_RC_ADDR}" \
+            --stats="${RCLONE_STATS}" \
+            --timeout="${RCLONE_TIMEOUT}" \
+            --uid="${RCLONE_UID}" \
+            --umask="${RCLONE_UMASK}" \
+            --verbose="${RCLONE_VERBOSE}" \
+            --vfs-cache-max-age="${RCLONE_VFS_CACHE_MAX_AGE}" \
+            --vfs-cache-max-size="${RCLONE_VFS_CACHE_MAX_SIZE}" \
+            --vfs-cache-mode="${RCLONE_VFS_CACHE_MODE}" \
+            --vfs-cache-poll-interval="${RCLONE_VFS_CACHE_POLL_INTERVAL}" \
+            --vfs-read-chunk-size-limit="${RCLONE_VFS_READ_CHUNK_SIZE_LIMIT}" \
+            --vfs-read-chunk-size="${RCLONE_VFS_READ_CHUNK_SIZE}" \
+#TODO: Include this once a proper default value is determined
+#           --daemon-timeout="${RCLONE_DAEMON_TIMEOUT}" \
+#           --volname="${RCLONE_VOLNAME}"
+            "${RCLONE_REMOTE_NAME}:${RCLONE_REMOTE_PATH}" \
+            "${RCLONE_LOCAL_PATH}"
+
+#Unmount rclone fs
+ExecStop=/bin/fusermount -u "${RCLONE_LOCAL_PATH}"
+
+#Restsart info
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target

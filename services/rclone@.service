@@ -1,4 +1,4 @@
-# /etc/systemd/system/rclone@.service
+# /etc/systemd/user/rclone@.service
 [Unit]
 Description=RClone mount of users remote %i using filesystem permissions
 Documentation=http://rclone.org/docs/

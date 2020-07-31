@@ -16,6 +16,8 @@ main() {
 
     mkdir -p "${HOME}/.config/systemd/user/default.target/"
     sudo cp services/rclone@.service /etc/systemd/user/rclone@.service
+    sudo cp services/rclone_vfs_refresh@.service /etc/systemd/user/rclone_vfs_refresh@.service
+    sudo cp services/rclone_vfs_refresh@.timer /etc/systemd/user/rclone_vfs_refresh@.timer
     systemctl --user daemon-reload
 
     while IFS= read -r line; do
@@ -47,8 +49,17 @@ main() {
         fi
 
         sudo mkdir -p "${RCLONE_LOCAL_PATH}"
+
         systemctl --user start rclone@"${line%%:}".service
         systemctl --user enable rclone@"${line%%:}".service
+
+        ## Don't need to start this, just enable the service
+        ## The timer will start it as needed
+        systemctl --user enable rclone_vfs_refresh@"${line%%:}".service
+
+        systemctl --user start rclone_vfs_refresh@"${line%%:}".timer
+        systemctl --user enable rclone_vfs_refresh@"${line%%:}".timer
+
         echo "Successfully mounted ${RCLONE_LOCAL_PATH}"
     done < <(rclone listremotes)
 }

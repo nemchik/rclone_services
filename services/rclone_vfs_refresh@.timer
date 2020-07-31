@@ -1,0 +1,9 @@
+# /etc/systemd/user/rclone_vfs_refresh@.timer
+[Unit]
+Description=Rclone VFS Refresh of users remote %i - Timer
+
+[Timer]
+OnUnitInactiveSec=167h
+
+[Install]
+WantedBy=timers.target

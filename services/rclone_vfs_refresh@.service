@@ -1,0 +1,38 @@
+# /etc/systemd/user/rclone_vfs_refresh@.service
+[Unit]
+Description=Rclone VFS Refresh of users remote %i - Service
+Requires=rclone@%i.service
+After=rclone@%i.service
+
+[Service]
+Type=oneshot
+
+#Default arguments for rclone mount. Can be overridden in the environment file
+Environment=RCLONE_CONFIG="%h/.config/rclone/rclone.conf"
+Environment=RCLONE_RC_ADDR="localhost:5572"
+Environment=RCLONE_TIMEOUT="5m0s"
+Environment=RCLONE_VERBOSE="0"
+
+#Overwrite default environment settings with settings from the file if present
+EnvironmentFile=-%h/.config/rclone/%i.env
+
+#Check that rclone is installed
+ExecStartPre=/usr/bin/test -x /usr/bin/rclone
+
+#Check the rclone configuration file
+ExecStartPre=/usr/bin/test -f "${RCLONE_CONFIG}"
+ExecStartPre=/usr/bin/test -r "${RCLONE_CONFIG}"
+#TODO: add test that the remote is configured for the rclone configuration
+#ExecStartPre=/usr/bin/test $(/usr/bin/rclone --config=${RCLONE_CONFIG} listremotes | /usr/bin/wc -l) -lt 1
+
+#Refresh rclone vfs
+ExecStart=/usr/bin/rclone rc vfs/refresh \
+            recursive=true \
+            --syslog \
+            --config="${RCLONE_CONFIG}" \
+            --rc-addr="${RCLONE_RC_ADDR}" \
+            --timeout="${RCLONE_TIMEOUT}" \
+            --verbose="${RCLONE_VERBOSE}"
+
+[Install]
+WantedBy=default.target

@@ -1,3 +1,3 @@
 # rclone_services
 
-rclone service files based on [Cloudbox](https://github.com/Cloudbox/Cloudbox)
+rclone.env defaults based on [Cloudbox](https://github.com/Cloudbox/Cloudbox)

@@ -26,7 +26,7 @@ Environment=RCLONE_DIR_PERMS="0777"
 Environment=RCLONE_DRIVE_CHUNK_SIZE="8M"
 Environment=RCLONE_FILE_PERMS="0666"
 Environment=RCLONE_GID="%G"
-Environment=RCLONE_LOCAL_PATH="/mnt/remote/rclone.%i"
+Environment=RCLONE_LOCAL_PATH="%h/%i"
 Environment=RCLONE_MAX_READ_AHEAD="128k"
 Environment=RCLONE_POLL_INTERVAL="1m0s"
 Environment=RCLONE_RC_ADDR="localhost:5572"
@@ -45,20 +45,17 @@ Environment=RCLONE_VFS_READ_CHUNK_SIZE_LIMIT="off"
 Environment=RCLONE_VFS_READ_CHUNK_SIZE="128M"
 
 #TODO: figure out default for the following parameter
-Environment=RCLONE_DAEMON_TIMEOUT="UNKNOWN_DEFULT"
-Environment=RCLONE_VOLNAME="UNKNOWN_DEFULT"
+#Environment=RCLONE_DAEMON_TIMEOUT="UNKNOWN_DEFULT"
+#Environment=RCLONE_VOLNAME="UNKNOWN_DEFULT"
 
 #Overwrite default environment settings with settings from the file if present
 EnvironmentFile=-%h/.config/rclone/%i.env
-
-#Run the service as the specified user/group
-User="${RCLONE_UID}"
-Group="${RCLONE_GID}"
 
 #Check that rclone is installed
 ExecStartPre=/usr/bin/test -x /usr/bin/rclone
 
 #Check the mount directory
+ExecStartPre=/bin/echo "${RCLONE_LOCAL_PATH}"
 ExecStartPre=/usr/bin/test -d "${RCLONE_LOCAL_PATH}"
 ExecStartPre=/usr/bin/test -w "${RCLONE_LOCAL_PATH}"
 #TODO: Add test for RCLONE_LOCAL_PATH being empty
@@ -110,11 +107,11 @@ ExecStart=/usr/bin/rclone mount \
             --vfs-cache-poll-interval="${RCLONE_VFS_CACHE_POLL_INTERVAL}" \
             --vfs-read-chunk-size-limit="${RCLONE_VFS_READ_CHUNK_SIZE_LIMIT}" \
             --vfs-read-chunk-size="${RCLONE_VFS_READ_CHUNK_SIZE}" \
-#TODO: Include this once a proper default value is determined
-#           --daemon-timeout="${RCLONE_DAEMON_TIMEOUT}" \
-#           --volname="${RCLONE_VOLNAME}"
             "${RCLONE_REMOTE_NAME}:${RCLONE_REMOTE_PATH}" \
             "${RCLONE_LOCAL_PATH}"
+#TODO: Include this once a proper default value is determined
+#           --daemon-timeout="${RCLONE_DAEMON_TIMEOUT}" \
+#           --volname="${RCLONE_VOLNAME}" \
 
 #Unmount rclone fs
 ExecStop=/bin/fusermount -u "${RCLONE_LOCAL_PATH}"

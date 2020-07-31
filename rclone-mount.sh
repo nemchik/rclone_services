@@ -16,30 +16,29 @@ main() {
 
     while IFS= read -r line; do
         if [[ ! -f "${HOME}/.config/rclone/${line%%:}.env" ]]; then
-            touch "${HOME}/.config/rclone/${line%%:}.env"
-            echo "RCLONE_LOCAL_PATH=\"\"" >> "${HOME}/.config/rclone/${line%%:}.env"
-            echo "RCLONE_RC_ADDR=\"\"" >> "${HOME}/.config/rclone/${line%%:}.env"
-
             echo "RCLONE_LOCAL_PATH must be set in ${HOME}/.config/rclone/${line%%:}.env"
             echo "RCLONE_RC_ADDR must be set in ${HOME}/.config/rclone/${line%%:}.env"
-            echo
             echo "Each remote requires a different path and port."
-            exit 1
+            echo "${line} will not be mounted."
+            echo
+            continue
         fi
 
         source "${HOME}/.config/rclone/${line%%:}.env"
 
         if [[ ! "${RCLONE_LOCAL_PATH}" =~ ^/.* ]]; then
             echo "RCLONE_LOCAL_PATH must be set in ${HOME}/.config/rclone/${line%%:}.env"
-            echo
             echo "Each remote requires a different path."
-            exit 1
+            echo "${line} will not be mounted."
+            echo
+            continue
         fi
         if [[ ! "${RCLONE_RC_ADDR}" =~ ^[a-zA-Z0-9_\.\-]+:[0-9]{1,5}$ ]]; then
             echo "RCLONE_RC_ADDR must be set in ${HOME}/.config/rclone/${line%%:}.env"
-            echo
             echo "Each remote requires a different port."
-            exit 1
+            echo "${line} will not be mounted."
+            echo
+            continue
         fi
 
         sudo mkdir -p "${RCLONE_LOCAL_PATH}"

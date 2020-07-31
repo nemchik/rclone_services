@@ -8,11 +8,15 @@ main() {
         exit 1
     fi
 
-    if [[ ! -f "${HOME}/.config/rclone/rclone.conf" ]]; then
+    if [[ $(rclone listremotes | wc -l) -lt 1 ]]; then
         echo "Run the following command to configure your rclone remotes:"
         echo "rclone config"
         exit 1
     fi
+
+    mkdir -p "${HOME}/.config/systemd/user/default.target/"
+    sudo cp services/rclone@.service /etc/systemd/user/rclone@.service
+    systemctl --user daemon-reload
 
     while IFS= read -r line; do
         if [[ ! -f "${HOME}/.config/rclone/${line%%:}.env" ]]; then
@@ -24,6 +28,7 @@ main() {
             continue
         fi
 
+        # shellcheck source=/dev/null
         source "${HOME}/.config/rclone/${line%%:}.env"
 
         if [[ ! "${RCLONE_LOCAL_PATH}" =~ ^/.* ]]; then

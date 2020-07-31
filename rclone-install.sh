@@ -17,14 +17,5 @@ main() {
     curl -fsSL rclone.org/install.sh -o "${GET_RCLONE}"
     sudo bash "${GET_RCLONE}" || true
     rm -f "${GET_RCLONE}" || true
-
-    mkdir -p "${HOME}/.config/systemd/user/default.target/"
-    sudo cp services/rclone@.service /etc/systemd/user/rclone@.service
-    systemctl --user daemon-reload
-
-    if [[ ! -f "${HOME}/.config/rclone/rclone.conf" ]]; then
-        echo "Run the following command to configure your rclone remotes:"
-        echo "rclone config"
-    fi
 }
 main

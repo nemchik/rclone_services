@@ -24,6 +24,7 @@ main() {
             continue
         fi
 
+        # shellcheck source=/dev/null
         source "${HOME}/.config/rclone/${line%%:}.env"
 
         if [[ ! "${RCLONE_LOCAL_PATH}" =~ ^/.* ]]; then

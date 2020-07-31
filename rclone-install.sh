@@ -22,7 +22,7 @@ main() {
     sudo cp services/rclone@.service /etc/systemd/user/rclone@.service
     systemctl --user daemon-reload
 
-    if [[ ! -f "${HOME}/.config/rclone/rclone.conf" ]]; then
+    if [[ ! -f "${HOME}/.config/rclone/rclone.conf" ]] || [[ $(/usr/bin/rclone --config="${RCLONE_CONFIG}" listremotes | wc -l) -gt 0 ]]; then
         echo "Run the following command to configure your rclone remotes:"
         echo "rclone config"
     fi

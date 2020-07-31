@@ -55,7 +55,6 @@ EnvironmentFile=-%h/.config/rclone/%i.env
 ExecStartPre=/usr/bin/test -x /usr/bin/rclone
 
 #Check the mount directory
-ExecStartPre=/bin/echo "${RCLONE_LOCAL_PATH}"
 ExecStartPre=/usr/bin/test -d "${RCLONE_LOCAL_PATH}"
 ExecStartPre=/usr/bin/test -w "${RCLONE_LOCAL_PATH}"
 #TODO: Add test for RCLONE_LOCAL_PATH being empty

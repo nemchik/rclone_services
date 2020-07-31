@@ -44,6 +44,7 @@ main() {
         sudo mkdir -p "${RCLONE_LOCAL_PATH}"
         systemctl --user start rclone@"${line%%:}".service
         systemctl --user enable rclone@"${line%%:}".service
+        echo "Successfully mounted ${RCLONE_LOCAL_PATH}"
     done < <(rclone listremotes)
 }
 main

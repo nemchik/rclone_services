@@ -53,8 +53,7 @@ main() {
         systemctl --user start rclone@"${line%%:}".service
         systemctl --user enable rclone@"${line%%:}".service
 
-        ## Don't need to start this, just enable the service
-        ## The timer will start it as needed
+        systemctl --user start rclone_vfs_refresh@"${line%%:}".service
         systemctl --user enable rclone_vfs_refresh@"${line%%:}".service
 
         systemctl --user start rclone_vfs_refresh@"${line%%:}".timer

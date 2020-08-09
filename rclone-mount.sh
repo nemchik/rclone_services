@@ -48,7 +48,7 @@ main() {
             continue
         fi
 
-        sudo mkdir -p "${RCLONE_LOCAL_PATH}"
+        mkdir -p "${RCLONE_LOCAL_PATH}"
 
         systemctl --user start rclone@"${line%%:}".service
         systemctl --user enable rclone@"${line%%:}".service

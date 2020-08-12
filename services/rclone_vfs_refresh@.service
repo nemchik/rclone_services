@@ -22,8 +22,7 @@ ExecStartPre=/usr/bin/test -x /usr/bin/rclone
 #Check the rclone configuration file
 ExecStartPre=/usr/bin/test -f "${RCLONE_CONFIG}"
 ExecStartPre=/usr/bin/test -r "${RCLONE_CONFIG}"
-#TODO: add test that the remote is configured for the rclone configuration
-#ExecStartPre=/usr/bin/test $(/usr/bin/rclone --config=${RCLONE_CONFIG} listremotes | /usr/bin/wc -l) -lt 1
+ExecStartPre=/usr/bin/test ! -z "$(/usr/bin/rclone --config=${RCLONE_CONFIG} listremotes | /usr/bin/wc -l | /usr/bin/tr -d 0 )"
 
 #Refresh rclone vfs
 ExecStart=/usr/bin/rclone rc vfs/refresh \

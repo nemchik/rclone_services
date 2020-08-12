@@ -9,9 +9,9 @@ Type=oneshot
 
 #Default arguments for rclone mount. Can be overridden in the environment file
 Environment=RCLONE_CONFIG="%h/.config/rclone/rclone.conf"
+Environment=RCLONE_LOG_LEVEL="NOTICE"
 Environment=RCLONE_RC_ADDR="localhost:5572"
 Environment=RCLONE_TIMEOUT="5m0s"
-Environment=RCLONE_VERBOSE="0"
 
 #Overwrite default environment settings with settings from the file if present
 EnvironmentFile=-%h/.config/rclone/%i.env
@@ -30,9 +30,9 @@ ExecStart=/usr/bin/rclone rc vfs/refresh \
             recursive=true \
             --syslog \
             --config="${RCLONE_CONFIG}" \
+            --log-level="${RCLONE_LOG_LEVEL}" \
             --rc-addr="${RCLONE_RC_ADDR}" \
-            --timeout="${RCLONE_TIMEOUT}" \
-            --verbose="${RCLONE_VERBOSE}"
+            --timeout="${RCLONE_TIMEOUT}"
 
 [Install]
 WantedBy=default.target

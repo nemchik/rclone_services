@@ -63,7 +63,6 @@ Environment=RCLONE_TRACK_RENAMES_STRATEGY="hash"
 Environment=RCLONE_TRANSFERS="4"
 Environment=RCLONE_UID="%U"
 Environment=RCLONE_UMASK="022"
-Environment=RCLONE_VERBOSE="0"
 Environment=RCLONE_VFS_CACHE_MAX_AGE="1h0m0s"
 Environment=RCLONE_VFS_CACHE_MAX_SIZE="off"
 Environment=RCLONE_VFS_CACHE_MODE="off"
@@ -156,7 +155,6 @@ ExecStart=/usr/bin/rclone mount \
             --transfers="${RCLONE_TRANSFERS}" \
             --uid="${RCLONE_UID}" \
             --umask="${RCLONE_UMASK}" \
-            --verbose="${RCLONE_VERBOSE}" \
             --vfs-cache-max-age="${RCLONE_VFS_CACHE_MAX_AGE}" \
             --vfs-cache-max-size="${RCLONE_VFS_CACHE_MAX_SIZE}" \
             --vfs-cache-mode="${RCLONE_VFS_CACHE_MODE}" \

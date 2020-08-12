@@ -12,28 +12,55 @@ Type=notify
 #Default arguments for rclone mount. Can be overridden in the environment file
 Environment=RCLONE_ATTR_TIMEOUT="1s"
 Environment=RCLONE_BUFFER_SIZE="16M"
-Environment=RCLONE_BWLIMIT="40M"
-Environment=RCLONE_CACHE_CHUNK_PATH="%h/.cache/rclone/cache-backend"
-Environment=RCLONE_CACHE_DB_PATH="%h/.cache/rclone/cache-backend"
 Environment=RCLONE_CACHE_DIR="%h/.cache/rclone"
-Environment=RCLONE_CACHE_INFO_AGE="6h0m0s"
-Environment=RCLONE_CACHE_TMP_UPLOAD_PATH="/tmp/rclone/%u/%i/upload"
-Environment=RCLONE_CACHE_WORKERS="4"
 Environment=RCLONE_CHECKERS="8"
 Environment=RCLONE_CONFIG="%h/.config/rclone/rclone.conf"
+Environment=RCLONE_CONTIMEOUT="1m0s"
+Environment=RCLONE_CUTOFF_MODE="HARD"
 Environment=RCLONE_DIR_CACHE_TIME="5m0s"
 Environment=RCLONE_DIR_PERMS="0777"
-Environment=RCLONE_DRIVE_CHUNK_SIZE="8M"
+Environment=RCLONE_EXPECT_CONTINUE_TIMEOUT="1s"
 Environment=RCLONE_FILE_PERMS="0666"
 Environment=RCLONE_GID="%G"
 Environment=RCLONE_LOCAL_PATH="%h/%i"
+Environment=RCLONE_LOG_FORMAT="date,time"
+Environment=RCLONE_LOG_LEVEL="NOTICE"
+Environment=RCLONE_LOW_LEVEL_RETRIES="10"
+Environment=RCLONE_MAX_AGE="off"
+Environment=RCLONE_MAX_BACKLOG="10000"
+Environment=RCLONE_MAX_DELETE="-1"
+Environment=RCLONE_MAX_DEPTH="-1"
 Environment=RCLONE_MAX_READ_AHEAD="128k"
+Environment=RCLONE_MAX_SIZE="off"
+Environment=RCLONE_MAX_STATS_GROUPS="1000"
+Environment=RCLONE_MAX_TRANSFER="off"
+Environment=RCLONE_MIN_AGE="off"
+Environment=RCLONE_MIN_SIZE="off"
+Environment=RCLONE_MODIFY_WINDOW="1ns"
+Environment=RCLONE_MULTI_THREAD_CUTOFF="250M"
+Environment=RCLONE_MULTI_THREAD_STREAMS="4"
 Environment=RCLONE_POLL_INTERVAL="1m0s"
 Environment=RCLONE_RC_ADDR="localhost:5572"
 Environment=RCLONE_REMOTE_NAME="%i"
 Environment=RCLONE_REMOTE_PATH="/"
+Environment=RCLONE_RC_JOB_EXPIRE_DURATION="1m0s"
+Environment=RCLONE_RC_JOB_EXPIRE_INTERVAL="10s"
+Environment=RCLONE_RC_MAX_HEADER_BYTES="4096"
+Environment=RCLONE_RC_REALM="rclone"
+Environment=RCLONE_RC_SERVER_READ_TIMEOUT="1h0m0s"
+Environment=RCLONE_RC_SERVER_WRITE_TIMEOUT="1h0m0s"
+Environment=RCLONE_RC_WEB_FETCH_URL="https://api.github.com/repos/rclone/rclone-webui-react/releases/latest"
+Environment=RCLONE_RETRIES="3"
+Environment=RCLONE_STATS_FILE_NAME_LENGTH="45"
+Environment=RCLONE_STATS_LOG_LEVEL="INFO"
+Environment=RCLONE_STATS_UNIT="bytes"
 Environment=RCLONE_STATS="1m0s"
+Environment=RCLONE_STREAMING_UPLOAD_CUTOFF="100k"
+Environment=RCLONE_SYSLOG_FACILITY="DAEMON"
 Environment=RCLONE_TIMEOUT="5m0s"
+Environment=RCLONE_TPSLIMIT_BURST="1"
+Environment=RCLONE_TRACK_RENAMES_STRATEGY="hash"
+Environment=RCLONE_TRANSFERS="4"
 Environment=RCLONE_UID="%U"
 Environment=RCLONE_UMASK="022"
 Environment=RCLONE_VERBOSE="0"
@@ -43,6 +70,8 @@ Environment=RCLONE_VFS_CACHE_MODE="off"
 Environment=RCLONE_VFS_CACHE_POLL_INTERVAL="1m0s"
 Environment=RCLONE_VFS_READ_CHUNK_SIZE_LIMIT="off"
 Environment=RCLONE_VFS_READ_CHUNK_SIZE="128M"
+Environment=RCLONE_VFS_READ_WAIT="20ms"
+Environment=RCLONE_VFS_WRITE_WAIT="1s"
 
 #TODO: figure out default for the following parameter
 #Environment=RCLONE_DAEMON_TIMEOUT="UNKNOWN_DEFULT"
@@ -79,33 +108,62 @@ ExecStart=/usr/bin/rclone mount \
             --config="${RCLONE_CONFIG}" \
             --attr-timeout="${RCLONE_ATTR_TIMEOUT}" \
             --buffer-size="${RCLONE_BUFFER_SIZE}" \
-            --bwlimit="${RCLONE_BWLIMIT}" \
-            --cache-chunk-path="${RCLONE_CACHE_CHUNK_PATH}" \
-            --cache-db-path="${RCLONE_CACHE_DB_PATH}" \
             --cache-dir="${RCLONE_CACHE_DIR}" \
-            --cache-info-age="${RCLONE_CACHE_INFO_AGE}" \
-            --cache-tmp-upload-path="${RCLONE_CACHE_TMP_UPLOAD_PATH}" \
-            --cache-workers="${RCLONE_CACHE_WORKERS}" \
             --checkers="${RCLONE_CHECKERS}" \
+            --config="${RCLONE_CONFIG}" \
+            --contimeout="${RCLONE_CONTIMEOUT}" \
+            --cutoff-mode="${RCLONE_CUTOFF_MODE}" \
             --dir-cache-time="${RCLONE_DIR_CACHE_TIME}" \
             --dir-perms="${RCLONE_DIR_PERMS}" \
-            --drive-chunk-size="${RCLONE_DRIVE_CHUNK_SIZE}" \
+            --expect-continue-timeout="${RCLONE_EXPECT_CONTINUE_TIMEOUT}" \
             --file-perms="${RCLONE_FILE_PERMS}" \
             --gid="${RCLONE_GID}" \
+            --log-format="${RCLONE_LOG_FORMAT}" \
+            --log-level="${RCLONE_LOG_LEVEL}" \
+            --low-level-retries="${RCLONE_LOW_LEVEL_RETRIES}" \
+            --max-age="${RCLONE_MAX_AGE}" \
+            --max-backlog="${RCLONE_MAX_BACKLOG}" \
+            --max-delete="${RCLONE_MAX_DELETE}" \
+            --max-depth="${RCLONE_MAX_DEPTH}" \
             --max-read-ahead="${RCLONE_MAX_READ_AHEAD}" \
+            --max-size="${RCLONE_MAX_SIZE}" \
+            --max-stats-groups="${RCLONE_MAX_STATS_GROUPS}" \
+            --max-transfer="${RCLONE_MAX_TRANSFER}" \
+            --min-age="${RCLONE_MIN_AGE}" \
+            --min-size="${RCLONE_MIN_SIZE}" \
+            --modify-window="${RCLONE_MODIFY_WINDOW}" \
+            --multi-thread-cutoff="${RCLONE_MULTI_THREAD_CUTOFF}" \
+            --multi-thread-streams="${RCLONE_MULTI_THREAD_STREAMS}" \
             --poll-interval="${RCLONE_POLL_INTERVAL}" \
             --rc-addr="${RCLONE_RC_ADDR}" \
+            --rc-job-expire-duration="${RCLONE_RC_JOB_EXPIRE_DURATION}" \
+            --rc-job-expire-interval="${RCLONE_RC_JOB_EXPIRE_INTERVAL}" \
+            --rc-max-header-bytes="${RCLONE_RC_MAX_HEADER_BYTES}" \
+            --rc-realm="${RCLONE_RC_REALM}" \
+            --rc-server-read-timeout="${RCLONE_RC_SERVER_READ_TIMEOUT}" \
+            --rc-server-write-timeout="${RCLONE_RC_SERVER_WRITE_TIMEOUT}" \
+            --rc-web-fetch-url="${RCLONE_RC_WEB_FETCH_URL}" \
+            --retries="${RCLONE_RETRIES}" \
+            --stats-file-name-length="${RCLONE_STATS_FILE_NAME_LENGTH}" \
+            --stats-log-level="${RCLONE_STATS_LOG_LEVEL}" \
+            --stats-unit="${RCLONE_STATS_UNIT}" \
             --stats="${RCLONE_STATS}" \
+            --streaming-upload-cutoff="${RCLONE_STREAMING_UPLOAD_CUTOFF}" \
+            --syslog-facility="${RCLONE_SYSLOG_FACILITY}" \
             --timeout="${RCLONE_TIMEOUT}" \
+            --tpslimit-burst="${RCLONE_TPSLIMIT_BURST}" \
+            --track-renames-strategy="${RCLONE_TRACK_RENAMES_STRATEGY}" \
+            --transfers="${RCLONE_TRANSFERS}" \
             --uid="${RCLONE_UID}" \
-            --umask="${RCLONE_UMASK}" \
-            --verbose="${RCLONE_VERBOSE}" \
+            --user-agent="${RCLONE_USER_AGENT}" \
             --vfs-cache-max-age="${RCLONE_VFS_CACHE_MAX_AGE}" \
             --vfs-cache-max-size="${RCLONE_VFS_CACHE_MAX_SIZE}" \
             --vfs-cache-mode="${RCLONE_VFS_CACHE_MODE}" \
             --vfs-cache-poll-interval="${RCLONE_VFS_CACHE_POLL_INTERVAL}" \
             --vfs-read-chunk-size-limit="${RCLONE_VFS_READ_CHUNK_SIZE_LIMIT}" \
             --vfs-read-chunk-size="${RCLONE_VFS_READ_CHUNK_SIZE}" \
+            --vfs-read-wait="${RCLONE_VFS_READ_WAIT}" \
+            --vfs-write-wait="${RCLONE_VFS_WRITE_WAIT}" \
             "${RCLONE_REMOTE_NAME}:${RCLONE_REMOTE_PATH}" \
             "${RCLONE_LOCAL_PATH}"
 #TODO: Include this once a proper default value is determined

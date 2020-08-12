@@ -19,7 +19,7 @@ main() {
             echo "RCLONE_LOCAL_PATH must be set in ${HOME}/.config/rclone/${line%%:}.env"
             echo "RCLONE_RC_ADDR must be set in ${HOME}/.config/rclone/${line%%:}.env"
             echo "Each remote requires a different path and port."
-            echo "${line} will not be mounted."
+            echo "${line} will not be umounted."
             echo
             continue
         fi
@@ -30,28 +30,28 @@ main() {
         if [[ ! "${RCLONE_LOCAL_PATH}" =~ ^/.* ]]; then
             echo "RCLONE_LOCAL_PATH must be set in ${HOME}/.config/rclone/${line%%:}.env"
             echo "Each remote requires a different path."
-            echo "${line} will not be mounted."
+            echo "${line} will not be umounted."
             echo
             continue
         fi
         if [[ ! "${RCLONE_RC_ADDR}" =~ ^[a-zA-Z0-9_\.\-]+:[0-9]{1,5}$ ]]; then
             echo "RCLONE_RC_ADDR must be set in ${HOME}/.config/rclone/${line%%:}.env"
             echo "Each remote requires a different port."
-            echo "${line} will not be mounted."
+            echo "${line} will not be umounted."
             echo
             continue
         fi
 
-        sudo umount "${RCLONE_LOCAL_PATH}"
+        sudo umount "${RCLONE_LOCAL_PATH}" || true
 
-        systemctl --user stop rclone@"${line%%:}".service
-        systemctl --user disable rclone@"${line%%:}".service
+        systemctl --user stop rclone@"${line%%:}".service || true
+        systemctl --user disable rclone@"${line%%:}".service || true
 
-        systemctl --user stop rclone_vfs_refresh@"${line%%:}".service
-        systemctl --user disable rclone_vfs_refresh@"${line%%:}".service
+        systemctl --user stop rclone_vfs_refresh@"${line%%:}".service || true
+        systemctl --user disable rclone_vfs_refresh@"${line%%:}".service || true
 
-        systemctl --user stop rclone_vfs_refresh@"${line%%:}".timer
-        systemctl --user disable rclone_vfs_refresh@"${line%%:}".timer
+        systemctl --user stop rclone_vfs_refresh@"${line%%:}".timer || true
+        systemctl --user disable rclone_vfs_refresh@"${line%%:}".timer || true
 
         echo "Successfully umounted ${RCLONE_LOCAL_PATH}"
     done < <(rclone listremotes)

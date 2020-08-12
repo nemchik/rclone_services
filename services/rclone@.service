@@ -106,7 +106,6 @@ ExecStart=/usr/bin/rclone mount \
             --no-modtime \
             --rc \
             --syslog \
-            --config="${RCLONE_CONFIG}" \
             --attr-timeout="${RCLONE_ATTR_TIMEOUT}" \
             --buffer-size="${RCLONE_BUFFER_SIZE}" \
             --cache-dir="${RCLONE_CACHE_DIR}" \

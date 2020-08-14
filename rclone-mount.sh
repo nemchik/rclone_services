@@ -13,7 +13,8 @@ main() {
         echo "rclone config"
         exit 1
     fi
-
+    
+    mkdir -p "${HOME}/.config/systemd/user/"	
     sudo cp services/rclone@.service /etc/systemd/user/rclone@.service
     sudo cp services/rclone_vfs_refresh@.service /etc/systemd/user/rclone_vfs_refresh@.service
     sudo cp services/rclone_vfs_refresh@.timer /etc/systemd/user/rclone_vfs_refresh@.timer
